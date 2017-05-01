@@ -106,6 +106,6 @@ def filter_client_db():
 
         return render_template('home.html',
                                destinations=calculated_destinations, origin=origin)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+#
+# if __name__ == '__main__':
+#     app.run(debug=True)
