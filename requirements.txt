@@ -1,0 +1,13 @@
+click==6.7
+Flask==0.12
+gunicorn==19.1.0
+itsdangerous==0.24
+Jinja2==2.9.5
+MarkupSafe==0.23
+PasteDeploy==1.5.2
+requests==2.13.0
+Werkzeug==0.11.15
+geopy==1.11.0
+pygeoip==0.3.2
+simplejson==3.8.2
+python-dateutil==2.5.3

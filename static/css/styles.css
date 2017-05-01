@@ -1,0 +1,16 @@
+.jumbotron {
+    margin-top: 50px;
+}
+
+#jumbo-header-small {
+    display: none;
+}
+
+#address-input {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.results-table {
+    margin-top: 10px;
+}

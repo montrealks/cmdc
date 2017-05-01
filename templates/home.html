@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+<div class="container">
+    <div class="row" id="address-input">
+        <div class="col col-4">
+            <form class="form-inline" action="/" method="post">
+                <label class="sr-only" for="address">Name</label>
+                <input type="text" class="form-control " id="address" name="address"
+                       placeholder="Please supply an address">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            {%if message %}
+            <div class="col col-4 alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              {{message|safe}}
+            </div>
+
+            {%endif%}
+
+
+        </div>
+    </div>
+
+    {% if destinations %}
+
+    <div class="row results-table">
+        <table id="example" class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>Run</td>
+                <td>Type</td>
+                <td>Duration (no traffic)</td>
+                <td>Duration (rush hour)</td>
+                <td>Distance (km)</td>
+                <td>Overall</td>
+
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for destination in destinations %}
+            <tr>
+                <td class="name">{{destination['Name']}}</td>
+                <td class="run">{{destination['Run']}}</td>
+                <td class="type">{{destination['Type']}}</td>
+                <td class="duration_no_traffic">{{destination['duration no traffic']}}</td>
+                <td class="duration_with_traffic">{{destination['duration with traffic']}}</td>
+                <td class="drive_distance">{{destination['drive_distance']}}</td>
+                <td class="drive_distance">{{destination['overall']}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
