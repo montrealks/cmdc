@@ -11,3 +11,4 @@ geopy==1.11.0
 pygeoip==0.3.2
 simplejson==3.8.2
 python-dateutil==2.5.3
+gspread==0.6.2
