@@ -81,5 +81,5 @@ def filter_client_db():
                                destinations=calculated_destinations)
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
