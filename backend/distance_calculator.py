@@ -41,6 +41,10 @@ def distance_api(origin, destinations, **geo_args):
     print("Google Distance Matrix API call", url)
 
     i = -1
+    if results["error_message"] == "You have exceeded your daily request quota for this API.":
+        destinations = {}
+        destinations['error'] = results["error_message"]
+        return destinations
     for result in results['rows'][0]['elements']:
         i += 1
         if results['rows'][0]['elements'][0]['status'] != 'OK':

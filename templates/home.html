@@ -5,7 +5,7 @@
 
 <div class="container">
     <div class="row" id="address-input">
-        <div class="col col-4">
+        <div class="col col-md-4">
             <form class="form-inline" action="/" method="post">
                 <label class="sr-only" for="address">Name</label>
                 <input type="text" class="form-control " id="address" name="address"
@@ -13,18 +13,23 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
+
             {%if message %}
-            <div class="col col-4 alert alert-danger" role="alert">
+            <div class="col alert alert-danger" role="alert">
               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
               <span class="sr-only">Error:</span>
               {{message|safe}}
             </div>
-
             {%endif%}
 
 
         </div>
-    </div>
+        {% if origin %}
+        <div class="col col-md-6 content alert alert-success">
+                Fromatted address: <strong>{{ origin }} </strong>
+            </div>
+        {% endif %}
+        </div>
 
     {% if destinations %}
 
