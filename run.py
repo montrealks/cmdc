@@ -70,8 +70,6 @@ def filter_client_db():
         # Send the ranked list to Google Distance Matrix
         calculated_destinations = distance_api(address, ranked_destinations)
 
-        pp.pprint(calculated_destinations)
-
         # get the 5 best destinations based on their overall rating
         for desination in calculated_destinations:
             overall = desination['drive_distance'] + desination['duration with traffic'] + desination['duration no traffic']
