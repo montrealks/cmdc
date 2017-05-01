@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request
 from urllib.request import urlopen
 from urllib.parse import urlencode
 import pprint
@@ -39,7 +39,6 @@ def geocoder(address):
     response = simplejson.load(urlopen(URL))
     print(URL)
 
-
     if response['status'] != "OK":
         origin['status'] = response['status']
         return origin
@@ -47,7 +46,7 @@ def geocoder(address):
     origin['longitude'] = response['results'][0]['geometry']['location']['lng']
     origin['latitude'] = response['results'][0]['geometry']['location']['lat']
     origin['formatted_address'] = response['results'][0]['formatted_address']
-    print(origin)
+    origin['given_address'] = address
 
     return origin
 
@@ -81,11 +80,9 @@ def filter_client_db():
         origin = geocoder(address)
         if origin['status'] != "OK":
             print("status not OK")
-            return render_template('home.html',
-                               message=origin['status'])
+            return render_template('home.html', message=origin['status'])
 
         # get the list of destinations from Google Sheets, typically their are more than 500
-
         destinations = do.results["clients"] if not DEBUG else dummy_lists().destinations_from_gsheet
 
 
@@ -108,8 +105,7 @@ def filter_client_db():
             desination['overall'] = round(overall, 2)
 
         return render_template('home.html',
-                               destinations=calculated_destinations, origin=origin['formatted_address'])
+                               destinations=calculated_destinations, origin=origin)
 
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

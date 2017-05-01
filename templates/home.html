@@ -26,7 +26,9 @@
         </div>
         {% if origin %}
         <div class="col col-md-6 content alert alert-success">
-                Fromatted address: <strong>{{ origin }} </strong>
+            Given address: <strong>{{ origin['given_address'] }} </strong><br>
+                Fromatted address: <strong>{{ origin['formatted_address'] }} </strong>
+            Geocoordinates: <strong>{{origin['latitude'], origin['longitude']}}</strong>
             </div>
         {% endif %}
         </div>
