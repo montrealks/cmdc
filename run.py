@@ -8,7 +8,7 @@ from backend.distance_calculator import dummy_lists
 from backend.distance_calculator import distance_api
 from backend.sheets_api import get_gspread_data
 from geopy.distance import vincenty
-from geopy.geocoders import Nominatim
+
 
 pp = pprint.PrettyPrinter()
 DEBUG = True
