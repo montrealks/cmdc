@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from urllib.request import urlopen
 import pprint
 import simplejson
@@ -17,18 +17,19 @@ app = Flask(__name__)
 def initialize_sheets_api():
     do = get_gspread_data()
     do.authenticate()
+
     return do.results['clients']
 
 ############################################################
 # SETTINGS
 ############################################################
-destinations_from_google_spread_sheet = 'api'
-calculated_destinations_from_matrix_api = 'api'
+destinations_from_google_spread_sheet = 'dummy'
+calculated_destinations_from_matrix_api = 'dummy'
 
 
 
 ############################################################
-# Dont Touch
+# Don't Touch
 ############################################################
 DESTINATIONS = dummy_lists().destinations_from_gsheet if destinations_from_google_spread_sheet == "dummy" else initialize_sheets_api()
 CALCULATED_DISTANCES = dummy_lists().dinstance_matrix_response_no_dwt if calculated_destinations_from_matrix_api == "dummy" else "api"
@@ -38,7 +39,7 @@ def geocoder(address):
     API = "AIzaSyARltEJxYPhqjJVAcq1eR-mEveAVCZ0nKY"
     QUERY = address.replace(" ", "%25")
     URL = "https://maps.googleapis.com/maps/api/geocode/json?address="+ QUERY +"&key="+ API
-    print("Attempting eocode API call at:", URL)
+    print("Attempting geocode API at:", URL)
     response = simplejson.load(urlopen(URL))
 
     if response['status'] != "OK":
@@ -123,10 +124,10 @@ def filter_client_db():
         # Get distances and durations from API or local dummy
         ############################################################
         print("Sending the ranked list to the distance matrix")
-        calculated_destinations = distance_api(address, ranked_destinations) if CALCULATED_DISTANCES != 'dummy' else CALCULATED_DISTANCES
+        calculated_destinations = distance_api(address, ranked_destinations)
         if "error" in calculated_destinations:
             return render_template('home.html', message=calculated_destinations['error'])
-        print("calculated destinations", len(calculated_destinations[0]))
+        print("calculated destinations", len(calculated_destinations))
 
 
 

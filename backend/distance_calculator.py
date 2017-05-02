@@ -8,6 +8,10 @@ from unicodedata import normalize
 pp = pprint.PrettyPrinter()
 
 
+CALCULATED_DISTANCES = "api"
+
+
+
 def distance_api(origin, destinations, **geo_args):
     # Adjustable Variables
     TRAFFIC_MODEL = 'pessimistic'  # Options are 'pessimistic', 'optimistic', and 'best_guess
@@ -30,30 +34,42 @@ def distance_api(origin, destinations, **geo_args):
         'departure_time': int(DEPARTURE_TIME.timestamp()),
         'mode': MODE
     })
-    #
-    # Build the URL for all destinations using their GEOCOORDINATES
-    # for address in destinations:
-    #     d += str(address['Lat'] + '%2c' + address['Lon'] + '%7C')
+
+
+    ############################################################
     # Build the URL for all destinations using their ADDRESS
+    ############################################################
     d = add_montreal(destinations)
+
+
+    ############################################################
     # Clean the accents
-    e = accent_cleaner(d)
+    ############################################################
+    a = accent_cleaner(d)
 
+
+    ############################################################
     # Get a response from the Google Distance Matrix API
-    url = GEOCODE_BASE_URL + '?' + urlencode(geo_args) + "&destinations=" + e + '&key=' + API_KEY
+    ############################################################
+
+    url = GEOCODE_BASE_URL + '?' + urlencode(geo_args) + "&destinations=" + a + '&key=' + API_KEY
     print("Built the Google Distance Matrix API URL:", url)
+    if CALCULATED_DISTANCES == "api":
+        response = urlopen(url)
+        results = simplejson.load(response)
+    else:
+        print("Using dummy calculated distances rather than google API")
+        results = dummy_lists().dinstance_matrix_response_no_dwt
 
-    response = urlopen(url)
-    results = simplejson.load(response)
-
-    # results = dummy_lists().dinstance_matrix_response_no_dwt
-
-
+    # Validate the reuslts
     if results["status"] != "OK":
         return error_checker(results)
 
-    updated_destinations = destinations_updater(results, destinations)
 
+    ############################################################
+    # Add the duration and distance results to 'destinations'
+    ############################################################
+    updated_destinations = destinations_updater(results, destinations)
     if len(updated_destinations) is 0:
         print("ERROR: Google could not find a path in between the address and any clients. Try a new address")
         return False
@@ -61,10 +77,23 @@ def distance_api(origin, destinations, **geo_args):
     return updated_destinations
 
 def accent_cleaner(accented_string):
+    """
+    Remove all french accents from the address values
+
+    :param accented_string: string containing characters which need to be normalized
+    :return: Normalized string, ok for url encoding
+    """
     return normalize('NFKD', accented_string).encode('ASCII', 'ignore').decode()
 
 def add_montreal(destinations):
+    """
+    Find address values that are not yet localized to Montreal.
+    This helps Google return accurate locations
+    :param destinations: the dictionary containing the address values
+    :return:
+    """
     d = ""
+
     for address in destinations:
         if ("Montreal" or "montreal" or "Montréal" or "montréal") not in address['Address']:
             address['Address'] += ", Montreal"
@@ -82,21 +111,26 @@ def destinations_updater(results, destinations):
     i = -1
     # get the number of results
     results_length = len(results['rows'][0]['elements'])
+
+    print("results length:", results_length)
     for result in results['rows'][0]['elements']:
         i += 1
         if results['rows'][0]['elements'][0]['status'] != 'OK':
             print('couldn\'nt find a route')
             del destinations[i]
             continue
-
+        formatted_address = results['destination_addresses'][i]
         distance = round(result['distance']['value'] / 1000, 3)  # km
         duration = round(result['duration']['value'] / 60, 3)  # minutes
         duration_in_traffic = round(result['duration_in_traffic']['value'] / 60, 3) if 'duration_in_traffic' in result else "No traffic Data available"  # minutes
         durations = {"drive_distance": distance,
                      "duration no traffic": duration,
-                     "duration with traffic": duration_in_traffic}
+                     "duration with traffic": duration_in_traffic,
+                     "formatted address": formatted_address}
         destinations[i].update(durations)
 
+
+    pp.pprint(destinations[:results_length])
     # trim extra destinations
     return destinations[:results_length]
 
@@ -1076,7 +1110,7 @@ class dummy_lists():
              'Address': '1001 Boulevard Crémazie East, Montréal, H2M 1M3, Quebec, Canada', 'Run': 'Wed W',
              'Lon': '-73.6308', 'Name': 'Cégep André Grasset'},
             {'Type': 'Commercial', 'Lat': '45.4793758', 'ID': '5127',
-             'Address': '3632 Notre-Dame, Montréal, Quebec, Canada', 'Run': 'Mon C', 'Lon': '-73.5811153',
+             'Address': '3632 Notre-Dame ouest, Montréal, Quebec, Canada, Montreal', 'Run': 'Mon C', 'Lon': '-73.5811153',
              'Name': 'Cafe St Henri'}, {'Type': 'Commercial', 'Lat': '45.483592', 'ID': '5195',
                                         'Address': '2360 Notre-Dame Ouest, Montréal, H3J 1N4', 'Run': 'Mon C',
                                         'Lon': '-73.573638', 'Name': 'Patrice Pâtissier - Marie-Josée Beaudoin'},
@@ -1160,16 +1194,16 @@ class dummy_lists():
             {'Type': 'Commercial', 'Lat': '45.523508', 'ID': '5162',
              'Address': '25 Avenue Fairmount O, Montréal, H2T 2L9, Quebec, Canada', 'Run': 'Mon C', 'Lon': '-73.59487',
              'Name': 'Fabergé'}, {'Type': 'Commercial', 'Lat': '45.48117', 'ID': '505701',
-                                  'Address': '3711 Rue Saint Antoine W, Montréal, Quebec, Canada', 'Run': 'Thur CS',
+                                  'Address': '3711 Rue Saint Antoine W, Montréal, Quebec, H4C 3P6, Canada, Montreal', 'Run': 'Thur CS',
                                   'Lon': '-73.5862',
                                   'Name': 'Imperial Tobacco - WET Maxim Perron, Caroline 905-759-2033'},
             {'Type': 'Commercial', 'Lat': '45.48117', 'ID': '505700',
-             'Address': '3711 Rue Saint Antoine W, Montréal, Quebec, Canada', 'Run': 'Thur CS', 'Lon': '-73.5862',
+             'Address': '3711 Rue Saint Antoine W, Montréal, Quebec, H4C 3P6, Canada, Montreal', 'Run': 'Thur CS', 'Lon': '-73.5862',
              'Name': 'Imperial Tobacco - DRY Maxim Perron, Caroline 905-759-2033'},
             {'Type': 'Commercial', 'Lat': '45.47834', 'ID': '5093',
              'Address': '340 Saint-Augustin, Montreal, H4C 2N8, Quebec, Canada', 'Run': 'Thur CS', 'Lon': '-73.5826',
              'Name': 'Mer & Monde'}, {'Type': 'Commercial', 'Lat': '45.4793758', 'ID': '5127',
-                                      'Address': '3632 Notre-Dame, Montréal, Quebec, Canada', 'Run': 'Thur CS',
+                                      'Address': '3632 Notre-Dame ouest, Montréal, Quebec, Canada, Montreal', 'Run': 'Thur CS',
                                       'Lon': '-73.5811153', 'Name': 'Cafe St Henri'},
             {'Type': 'Commercial', 'Lat': '45.51312', 'ID': '5063',
              'Address': '400 Notre Dame East, Montreal, Quebec, Canada', 'Run': 'Thur CS', 'Lon': '-73.5522',
@@ -1282,7 +1316,7 @@ class dummy_lists():
                                                              'Run': 'Tue C', 'Lon': '-73.5887',
                                                              'Name': 'Robin des Bois - Judy'},
             {'Type': 'Commercial', 'Lat': '45.4820969', 'ID': '5120',
-             'Address': '5480 St Dominique, (5505 St-Laurent) – Ubisoft 1, Montréal, , Quebec, Canada', 'Run': 'Tue C',
+             'Address': '5505 St-Laurent – Ubisoft 1, Montréal, , Quebec, Canada', 'Run': 'Tue C',
              'Lon': '-73.5828094', 'Name': 'Ubisoft - Stephane Riendeau-Gravel'},
             {'Type': 'Commercial', 'Lat': '45.5261136', 'ID': '5009', 'Address': '5333 Casgrain Avenue, Montreal, QC',
              'Run': 'Tue C', 'Lon': '-73.5972304', 'Name': 'Aux Vivres'},
@@ -1354,7 +1388,7 @@ class dummy_lists():
             {'Type': 'Commercial', 'Lat': '45.50693', 'ID': '5084',
              'Address': '3575 Rue University, Montreal, H3A 2A8, Quebec, Canada', 'Run': 'Tue C', 'Lon': '-73.5772',
              'Name': 'McGill MORE Housing - 3575 University'}, {'Type': 'Commercial', 'Lat': '45.541618', 'ID': '5176',
-                                                                'Address': '3559 Robert Bourrassa, #2 (University), Montréal, , Quebec, Canada',
+                                                                'Address': '3559 Robert Bourrassa, , Montréal, , Quebec, Canada',
                                                                 'Run': 'Tue C', 'Lon': '-73.621372',
                                                                 'Name': 'ÉCOLE Project'},
             {'Type': 'Commercial', 'Lat': '45.49645', 'ID': '5054',
@@ -1378,7 +1412,7 @@ class dummy_lists():
             {'Type': 'Commercial', 'Lat': '45.4954277', 'ID': '5182', 'Address': ', Montréal, Quebec, Canada',
              'Run': 'Tue C', 'Lon': '-73.575603', 'Name': 'Chic Frigo Sans Fric'},
             {'Type': 'Commercial', 'Lat': '45.5169831', 'ID': '5126',
-             'Address': '3980 St Dominique (3981 St Laurent) - Moksha Yoga', 'Run': 'Tue C', 'Lon': '-73.5800969',
+             'Address': '3981 St Laurent - Moksha Yoga', 'Run': 'Tue C', 'Lon': '-73.5800969',
              'Name': 'Moksha Yoga'}, {'Type': 'Commercial', 'Lat': '45.52226', 'ID': '5070',
                                       'Address': '201 Avenue Laurier West, Montreal, H2T 2N9, Quebec, Canada',
                                       'Run': 'Tue C', 'Lon': '-73.5938', 'Name': "Mandy's Laurier"},
@@ -1948,8 +1982,8 @@ class dummy_lists():
                 "3970-4000 Rue Saint-Ambroise, Montréal, QC H4C 2E1, Canada",
                 "3985 Rue Notre-Dame Ouest, Montréal, QC H4C 1R2, Canada",
                 "256 Rue Saint-Ferdinand, Montreal, QC H4C 2S8, Canada",
-                "3632 Rue Notre-Dame Ouest, Montréal, QC H4C 1P5, Canada",
-                "3632 Rue Notre-Dame Ouest, Montréal, QC H4C 1P5, Canada",
+                "3632 Notre-Dame ouest, Montréal, Quebec, Canada, Montreal",
+                "3632 Notre-Dame ouest, Montréal, Quebec, Canada, Montreal",
                 "211-295 Rose of Lima St, Montreal, QC H4C, Canada",
                 "211-295 Rose of Lima St, Montreal, QC H4C, Canada",
                 "4291 Rue Saint-Ambroise, Montréal, QC H4C 2E4, Canada",
