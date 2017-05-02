@@ -23,7 +23,8 @@ class get_gspread_data():
             print('Succesfully opened the worksheet', self.sheet,'inside the workbook',
                   'https://docs.google.com/spreadsheets/d/'+ self.workbook +'/edit#gid=0')
         except:
-            return 'ERROR. Unable to load worksheet'
+            self.results = "ERROR"
+            return self.results
 
         ### get_all_values() returns a list of lists in which each list is a single row from the sheet ###
         print("trying to convert the list object to a dictionary")

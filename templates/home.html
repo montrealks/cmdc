@@ -42,8 +42,10 @@
                 <td>Name</td>
                 <td>Run</td>
                 <td>Type</td>
-                <td>Duration (no traffic)</td>
-                <td>Duration (rush hour)</td>
+                <td>Address</td>
+                <td>lat & lon</td>
+                <td>Duration @ 2pm (ideal)</td>
+                <td>Duration @ 2pm (traffic)</td>
                 <td>Distance (km)</td>
                 <td>Overall</td>
 
@@ -56,6 +58,8 @@
                 <td class="name">{{destination['Name']}}</td>
                 <td class="run">{{destination['Run']}}</td>
                 <td class="type">{{destination['Type']}}</td>
+                <td class="address">{{destination['Address']}}</td>
+                <td class="latlon">{{destination['Lat']}}, {{destination['Lon']}}</td>
                 <td class="duration_no_traffic">{{destination['duration no traffic']}}</td>
                 <td class="duration_with_traffic">{{destination['duration with traffic']}}</td>
                 <td class="drive_distance">{{destination['drive_distance']}}</td>
