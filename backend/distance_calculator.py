@@ -8,7 +8,7 @@ from unicodedata import normalize
 pp = pprint.PrettyPrinter()
 
 
-CALCULATED_DISTANCES = "api"
+CALCULATED_DISTANCES = "dummy"
 
 
 

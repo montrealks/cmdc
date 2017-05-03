@@ -5,7 +5,7 @@
 
 <div class="container">
     <div class="row" id="address-input">
-        <div class="col col-md-6">
+        <div class="col col-md-5">
             <form class="form-inline" action="/" method="post">
                 <label class="sr-only" for="address">Name</label>
                 <input required type="text" class="form-control" id="address" size="35" name="address"
@@ -13,7 +13,14 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
-
+            <div>
+                {% if destinations  %}
+          <div class="btn-group map_table_toggle">
+              <button type="button" class="btn btn-primary active" style="width: 151px">Table</button>
+              <button type="button" class="btn btn-success" style="width: 150px">Map</button>
+          </div>
+                {% endif %}
+        </div>
             {%if message %}
             <div class="col alert alert-danger" role="alert">
               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
