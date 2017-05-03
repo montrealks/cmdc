@@ -55,7 +55,7 @@ def distance_api(origin, destinations, **geo_args):
 
     coded_addresses = {}
     coded_addresses['a'] = a
-    
+
     url = GEOCODE_BASE_URL + '?' + urlencode(geo_args) + "&destinations=" + urlencode(coded_addresses) + '&key=' + API_KEY
     print("Built the Google Distance Matrix API URL:", url)
     if CALCULATED_DISTANCES == "api":
