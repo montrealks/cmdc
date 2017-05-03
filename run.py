@@ -24,7 +24,7 @@ def initialize_sheets_api():
 # SETTINGS
 ############################################################
 destinations_from_google_spread_sheet = 'dummy'
-calculated_destinations_from_matrix_api = 'dummy'
+
 
 
 
@@ -32,7 +32,7 @@ calculated_destinations_from_matrix_api = 'dummy'
 # Don't Touch
 ############################################################
 DESTINATIONS = dummy_lists().destinations_from_gsheet if destinations_from_google_spread_sheet == "dummy" else initialize_sheets_api()
-CALCULATED_DISTANCES = dummy_lists().dinstance_matrix_response_no_dwt if calculated_destinations_from_matrix_api == "dummy" else "api"
+
 
 def geocoder(address):
     origin={}
@@ -144,5 +144,5 @@ def filter_client_db():
         return render_template('home.html',
                                destinations=calculated_destinations, origin=origin)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

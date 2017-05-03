@@ -52,7 +52,11 @@ def distance_api(origin, destinations, **geo_args):
     # Get a response from the Google Distance Matrix API
     ############################################################
 
-    url = GEOCODE_BASE_URL + '?' + urlencode(geo_args) + "&destinations=" + a + '&key=' + API_KEY
+
+    coded_addresses = {}
+    coded_addresses['a'] = a
+    
+    url = GEOCODE_BASE_URL + '?' + urlencode(geo_args) + "&destinations=" + urlencode(coded_addresses) + '&key=' + API_KEY
     print("Built the Google Distance Matrix API URL:", url)
     if CALCULATED_DISTANCES == "api":
         response = urlopen(url)
@@ -130,7 +134,7 @@ def destinations_updater(results, destinations):
         destinations[i].update(durations)
 
 
-    pp.pprint(destinations[:results_length])
+    # pp.pprint(destinations[:results_length])
     # trim extra destinations
     return destinations[:results_length]
 
