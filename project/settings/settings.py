@@ -8,8 +8,8 @@ from dateutil.relativedelta import relativedelta
 #####################################
 # Run settings
 #####################################
-LOCAL_RUN = True
-DISTANCE_MATRIX = "dummy" # 'api' or 'dummy'
+LOCAL_RUN = False
+DISTANCE_MATRIX = "api" # 'api' or 'dummy'
 GOOGLE_SPREADSHEET = "dummy" # 'api' or 'dummy'
 
 #####################################
