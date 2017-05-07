@@ -1,48 +1,95 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Compost Montreal Distance Calculator</title>
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <title>Compost Montreal Distance Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
 
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
 
-        <!-- Bootstrap JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Nd9VVUv2AeW-cLegNm17GPlLOzx_A6w&v=3.exp&libraries=places&region=CA"></script>
-        <script>
-        function initialize() {
-        var input = document.getElementById('address');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        }
-    google.maps.event.addDomListener(window, 'load', initialize);
-</script>
+    <!-- Google maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9Nd9VVUv2AeW-cLegNm17GPlLOzx_A6w&v=3.exp&libraries=places&region=CA"></script>
 
-        <script src="/static/js/methods.js"></script>
-    </head>
-            <div class="container ">
-            <div class="jumbotron">
-                <h1 id="jumbo-header">Compost Montreal Distance Calculator</h1>
-                <div id="jumbo-text">
-                    <p>This is distance calculator app. Enter any address into the box and click submit. The App will
-                    compute the 25 nearest Compost Montreal clients</p>
-                </div>
-            </div>
+    <!-- Firebase API -->
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+
+    <script src="/static/js/methods.js"></script>
+</head>
+
+<body>
+<div class="container ">
+    <div class="jumbotron">
+        <h1 id="jumbo-header">Compost Montreal Distance Calculator</h1>
+        <div id="jumbo-text">
+            <p>This is distance calculator app. Enter any address into the box and click submit. The App will
+                compute the 25 nearest Compost Montreal clients</p>
         </div>
-    <body>
-        {% block body %}
-        {% endblock %}
+    </div>
+</div>
 
-    </body>
-</html>
+
+
+
+<div class="container ">
+    <div class="row" id="address-input">
+        <div class="col col-md-5">
+            <form class="form-inline" action="/" method="post">
+                <label class="sr-only" for="address">Name</label>
+                <input required type="text" class="form-control" id="address" size="35" name="address"
+                       placeholder="Please supply an address">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            <div>
+                {% if destinations %}
+                <div class="btn-group map_table_toggle">
+                    <button type="button" id="table_button" class="btn btn-primary active">Table</button>
+                    <button type="button" id="map_button" class="btn btn-success">Map</button>
+                    <button type="button" id="feedback" class="btn btn-info">Feedback</button>
+                </div>
+
+                <div class="alert alert-success" id="feedback_success_alert">
+                    <strong>Success!</strong> thank you for your feedback.
+                </div>
+
+                {% endif %}
+            </div>
+            {%if message %}
+            <div class="col alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{message|safe}}
+            </div>
+            {%endif%}
+
+
+        </div>
+        {% if origin %}
+        <div class="col col-md-6 content alert alert-success">
+            Given address: <strong>{{ origin['given_address'] }} </strong><br>
+            Fromatted address: <strong>{{ origin['formatted_address'] }} </strong>
+            Geocoordinates: <strong>{{origin['latitude'], origin['longitude']}}</strong>
+        </div>
+        {% endif %}
+    </div>
+
+
+
+{% block table %}
+{% endblock %}
+{% block map %}
+{% endblock %}
+    </div>
+</body>

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block map %}
+
+
+
+<h3>Distance Calculator Map</h3>
+<style>
+   #map {
+    height: 400px;
+    width: 60%;
+   }
+</style>
+<div id="map"></div>
+
+
+
+<script>
+function initMap() {
+
+destinations = JSON.parse('{{ d|safe }}');
+
+var map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 7,
+  center: destinations['1']
+});
+
+jQuery.each(destinations, function(i, val){
+    new google.maps.Marker({
+    position: val,
+    map: map,
+    title: });
+});
+
+};
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARltEJxYPhqjJVAcq1eR-mEveAVCZ0nKY&callback=initMap"></script>
+
+
+
+{% endblock %}

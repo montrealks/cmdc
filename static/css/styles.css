@@ -18,7 +18,25 @@
 .map_table_toggle {
     margin-top: 20px;
 }
+.map_table_toggle > button {
+    width: 100px;
+}
 
+#map {
+    height: 600px;
+    width: 100%;
+}
+.map {
+    margin-bottom: 300px;
+}
+.feedback_row {
+    display: none;
+}
+#feedback_success_alert {
+    display:none;
+    width:300px;
+    margin-top:10px;
+}
 .pac-container:after {
            /* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
            background-image: none !important; height: 0px;
