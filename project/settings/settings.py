@@ -35,4 +35,4 @@ GEOCODE_BASE_URL = "https://maps.googleapis.com/maps/api/distancematrix/json"
 # General Settings
 #####################################
 pp = pprint.PrettyPrinter()
-CMDC_API = "AIzaSyARltEJxYPhqjJVAcq1eR-mEveAVCZ0nKY"
+CMDC_API = ""
